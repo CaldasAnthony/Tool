@@ -208,7 +208,7 @@ Flux = True            ###### Spectre flux = f(longueur d'onde)
 
 # Sauvegardes
 
-save_adress = "/data1/caldas/Pytmosph3R/"
+save_adress = "/data1/caldas/Pytmosph3R/Tools/"
 special = ''
 stud = stud_type(r_eff,Single,Continuum,Isolated,Scattering,Clouds)
 save_name_3D = saving('3D',type,special,save_adress,version,name_exo,reso_long,reso_lat,t,h,dim_bande,dim_gauss,r_step,\
@@ -307,7 +307,7 @@ if Profil == True :
         z_array = np.arange(h/np.float(delta_z)+1)*float(delta_z)
         if LimTop == False :
             lim_alt = h
-        save_adress = "/data1/caldas/Pytmosph3R/"
+        save_adress = "/data1/caldas/Pytmosph3R/Tools/"
         save_name_3D = saving('3D',type,special,save_adress,version,name_exo,reso_long,reso_lat,t,h,dim_bande,dim_gauss,r_step,\
             phi_rot,r_eff,domain,stud,lim_alt,rupt_alt,long,lat,Discreet,Integration,Module,Optimal,Kcorr,False)
 
