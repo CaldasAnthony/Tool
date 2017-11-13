@@ -91,12 +91,12 @@ ind_cross, ind_active = index_active (n_species,n_species_cross,n_species_active
 
 # Informations generale sur les donnees continuum
 
-cont_tot = np.array(['H2-He_2011.cia','H2-He_2011.cia','H2O_CONT_SELF.dat','H2O_CONT_FOREIGN.dat'])
-cont_species = np.array(['H2','He','H2Os','H2O'])
-cont_associations = np.array(['h2he','h2he','h2oh2o','h2ofor'])
-#cont_tot = np.array(['H2-H2_2011.cia','H2-He_2011.cia'])
-#cont_species = np.array(['H2','He'])
-#cont_associations = np.array(['h2h2','h2he'])
+#cont_tot = np.array(['H2-He_2011.cia','H2-He_2011.cia','H2O_CONT_SELF.dat','H2O_CONT_FOREIGN.dat'])
+#cont_species = np.array(['H2','He','H2Os','H2O'])
+#cont_associations = np.array(['h2he','h2he','h2oh2o','h2ofor'])
+cont_tot = np.array(['H2-He_2011.cia','H2-He_2011.cia'])
+cont_species = np.array(['H2','He'])
+cont_associations = np.array(['h2he','h2he'])
 class continuum :
     def __init__(self) :
         self.number = cont_tot.size
