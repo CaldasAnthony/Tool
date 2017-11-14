@@ -15,8 +15,8 @@ from pytransfert import *
 
 path = "/data1/caldas/Pytmosph3R/"
 name_file = "Tools/Files"
-#name_exo = "Waterworld_HD209458b"
-name_exo = 'Waterworld'
+name_exo = "HD209458"
+#name_exo = 'Waterworld'
 name_source = "Source"
 opac_file, param_file, stitch_file = 'Opacity', 'Parameters', 'Stitch'
 version = 6.2
@@ -33,25 +33,22 @@ if inclinaison != 0. :
 
 ########################################################################################################################
 
-# Proprietes de l'exoplanete
-
-#Rp = 15.*R_T
-#Mp = 220.*M_T
-#g0 = G*Mp/(Rp**2)
-
 # Proprietes de l'etoile hote
 
-#Rs = 1.155*R_S
-#Ts = 6065.
+Rp = 15.*R_T
+Mp = 220.*M_T
 
-Rp = 0.246384689105*R_J
-Mp = 0.0206006322445*M_J
+#Rp = 0.246384689105*R_J
+#Mp = 0.0206006322445*M_J
 g0 = G*Mp/(Rp**2)
 
 # Proprietes de l'etoile hote
 
-Rs = 0.206470165349*R_S
-Ts = 3000.
+Rs = 1.155*R_S
+Ts = 6065.
+
+#Rs = 0.206470165349*R_S
+#Ts = 3000.
 
 # Proprietes en cas de lecture d'un diagfi
 
@@ -59,12 +56,12 @@ alpha_step, delta_step = 2*np.pi/np.float(reso_long), np.pi/np.float(reso_lat)
 
 # Proprietes de l'atmosphere
 
-n_species = np.array(['H2','He','H2O'])
-n_species_active = np.array(['H2O'])
+n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
+n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
 
 # Proprietes de l'atmosphere isotherme
 
-T_iso_array, P_surf = np.array([500.,1000.]), 1.e+6
+T_iso_array, P_surf = np.array([1500.,2000.]), 1.e+6
 x_ratio_species_active = np.array([0.1])
 x_ratio_species_inactive = np.array([0.00])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)
@@ -117,9 +114,8 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 20.
+lim_alt, rupt_alt, beta = h, 0.e+0, 10.
 beta_rad = beta*2*np.pi/(360.)
-print beta_rad
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
 z_reso = int(h/delta_z) + 1
@@ -145,6 +141,7 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
+Composition = True     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
@@ -252,6 +249,10 @@ print 'Resolution of the GCM simulation (latitude/longitude) : %i/%i'%(reso_lat,
 
 if Profil == True :
 
+    if Composition == True :
+        T_comp = np.load('%s%s/T_comp_%s.npy'%(path,name_source,name_exo))
+        P_comp = np.load('%s%s/P_comp_%s.npy'%(path,name_source,name_exo))
+        comp = np.load('%s%s/x_species_comp_%s.npy'%(path,name_source,name_exo))
     if TopPressure == True :
         T_Ref = np.amax(T_iso_array)
         alp = R_gp*T_Ref/(g0*M)*np.log(P_h/P_surf)
@@ -297,9 +298,14 @@ if Profil == True :
                     else :
                         z = (i_n-0.5)*delta_z
                 data_convert[1,0,i_n,i_lat,i_long] = T
-                data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*M/(R_gp*T)*z/(1+z/Rp))
-                data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = x_ratio_species
-                data_convert[number-1,0,i_n,i_lat,i_long] = M
+                if Composition == False :
+                    data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = x_ratio_species
+                    data_convert[number-1,0,i_n,i_lat,i_long] = M
+                else :
+                    res, c_grid, i_grid = interp2olation_uni_multi(data_convert[0,0,i_n,i_lat,i_long],data_convert[1,0,i_n,i_lat,i_long],P_comp,T_comp,comp)
+                    data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = res/np.nansum(res)
+                    data_convert[number-1,0,i_n,i_lat,i_long] = np.nansum(M_species*data_convert[2:2+n_species.size,0,i_n,i_lat,i_long])
+                data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*z/(1+z/Rp))
 
     if TopPressure == True :
         h = h_top
