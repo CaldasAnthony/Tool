@@ -264,7 +264,8 @@ if Profil == True :
     data_convert = np.zeros((number,1,n_layers+2,reso_lat+1,reso_long+1))
     T_min, T_max = np.amin(T_iso_array), np.amax(T_iso_array)
     d_lim = (Rp+h)*np.cos(np.pi/2.-beta_rad)
-    print d_lim
+
+    bar = ProgressBar(reso_lat+1,'Data generation')
 
     for i_lat in range(reso_lat+1) :
         for i_long in range(reso_long+1) :
@@ -306,6 +307,7 @@ if Profil == True :
                     data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = res/np.nansum(res)
                     data_convert[number-1,0,i_n,i_lat,i_long] = np.nansum(M_species*data_convert[2:2+n_species.size,0,i_n,i_lat,i_long])
                 data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*z/(1+z/Rp))
+        bar.animate(i_lat+1)
 
     if TopPressure == True :
         h = h_top
