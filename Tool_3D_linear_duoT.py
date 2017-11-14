@@ -117,7 +117,7 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 15.
+lim_alt, rupt_alt, beta = h, 0.e+0, 20.
 beta_rad = beta*2*np.pi/(360.)
 print beta_rad
 lat, long = 24, 47
