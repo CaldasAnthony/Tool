@@ -145,11 +145,11 @@ Composition = True     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
-Cylindre = False        ###### Construit la maille cylindrique
+Cylindre = True        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
 Layers = True
 
-Corr = False            ###### Traite les parcours optiques
+Corr = True            ###### Traite les parcours optiques
 Gravity = False         ###### Pour travailler a gravite constante
 Discret = True         ###### Calcul les distances discretes
 Integral = False        ###### Effectue l'integration sur les chemins optiques
