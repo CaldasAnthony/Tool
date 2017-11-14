@@ -198,7 +198,7 @@ Distribution = False    ###### Permet de visualiser la distribution de spectre d
 
 # Plot
 
-View = True
+View = False
 
 Radius = True          ###### Spectre rayon effective = f(longueur d'onde)
 Flux = True            ###### Spectre flux = f(longueur d'onde)
