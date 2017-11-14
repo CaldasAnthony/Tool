@@ -302,11 +302,20 @@ if Profil == True :
                 if Composition == False :
                     data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = x_ratio_species
                     data_convert[number-1,0,i_n,i_lat,i_long] = M
+                    data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*M/(R_gp*T)*z/(1+z/Rp))
                 else :
                     res, c_grid, i_grid = interp2olation_uni_multi(data_convert[0,0,i_n,i_lat,i_long],data_convert[1,0,i_n,i_lat,i_long],P_comp,T_comp,comp)
                     data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = res/np.nansum(res)
                     data_convert[number-1,0,i_n,i_lat,i_long] = np.nansum(M_species*data_convert[2:2+n_species.size,0,i_n,i_lat,i_long])
-                data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*z/(1+z/Rp))
+                    if i_n == 0 :
+                        data_convert[0,0,i_n,i_lat,i_long] = P_surf
+                    else :
+                        g = g0*1/(1+z/Rp)**2
+                        if i_n == 1 or i_n == n_layers+1 :
+                            delta = delta_z/2.
+                        else :
+                            delta = delta_z
+                        data_convert[0,0,i_n,i_lat,i_long] = data_convert[number-1,0,i_n-1,i_lat,i_long]*np.exp(-g*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*delta)
         bar.animate(i_lat+1)
 
     if TopPressure == True :
