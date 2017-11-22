@@ -15,7 +15,7 @@ from pytransfert import *
 
 path = "/data1/caldas/Pytmosph3R/"
 name_file = "Tools/Files"
-name_exo = "Waterworld_real"
+name_exo = "HD209458"
 name_source = "Source"
 opac_file, param_file, stitch_file = 'Opacity', 'Parameters', 'Stitch'
 version = 6.2
@@ -34,14 +34,20 @@ if inclinaison != 0. :
 
 # Proprietes de l'exoplanete
 
-Rp = 0.246384689105*R_J
-Mp = 0.0206006322445*M_J
+Rp = 15.*R_T
+Mp = 220.*M_T
+
+#Rp = 0.246384689105*R_J
+#Mp = 0.0206006322445*M_J
 g0 = G*Mp/(Rp**2)
 
 # Proprietes de l'etoile hote
 
-Rs = 0.206470165349*R_S
-Ts = 3000.
+Rs = 1.155*R_S
+Ts = 6065.
+
+#Rs = 0.206470165349*R_S
+#Ts = 3000.
 
 # Proprietes en cas de lecture d'un diagfi
 
@@ -49,14 +55,14 @@ alpha_step, delta_step = 2*np.pi/np.float(reso_long), np.pi/np.float(reso_lat)
 
 # Proprietes de l'atmosphere
 
-n_species = np.array(['H2','He','H2O'])
-n_species_active = np.array(['H2O'])
+n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
+n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
 
 # Proprietes de l'atmosphere isotherme
 
-T_iso_array, P_surf, P_tau = np.array([1000.,1500.]), 1.e+6, 1.e+3
-x_ratio_species_active = np.array([0.1])
-x_ratio_species_inactive = np.array([0.00])
+T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
+x_ratio_species_active = np.array([0.002,0.002,0.002,0.002,0.002,0.002])
+x_ratio_species_inactive = np.array([0.002])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)
 
 # Proprietes des nuages
@@ -95,7 +101,7 @@ class continuum :
 
 # Proprietes de maille
 
-h, P_h, n_layers = 1.36e+7, 1.e-3, 100
+h, P_h, n_layers = 1.36e+7, 1.e-5, 150
 delta_z, r_step, x_step, theta_number = 3.0e+4, 3.0e+4, 3.0e+4, 96
 z_array = np.arange(h/np.float(delta_z)+1)*float(delta_z)
 theta_step = 2*np.pi/np.float(theta_number)
@@ -104,9 +110,8 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 30.
+lim_alt, rupt_alt, beta = h, 0.e+0, 40.
 beta_rad = beta*2*np.pi/(360.)
-print beta_rad
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
 z_reso = int(h/delta_z) + 1
@@ -133,14 +138,15 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
+Composition = True     ###### Se placer a l'equilibre thermodynamique
 
-Parameters = True
+Parameters = False
 
-Cylindre = False        ###### Construit la maille cylindrique
+Cylindre = True        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
 Layers = True
 
-Corr = False            ###### Traite les parcours optiques
+Corr = True            ###### Traite les parcours optiques
 Gravity = False         ###### Pour travailler a gravite constante
 Discret = True         ###### Calcul les distances discretes
 Integral = False        ###### Effectue l'integration sur les chemins optiques
@@ -177,7 +183,7 @@ Module = False          ###### Si nous souhaitons moduler la densite de referenc
 D3Maille = True        ###### Si nous voulons resoudre le transfert dans la maille 3D
 TimeSel = True         ###### Si nous etudions un temps precis de la simulation
 
-Script = True          ###### Si nous voulons avoir une version .dat du spectre
+Script = False          ###### Si nous voulons avoir une version .dat du spectre
 Pressure_plot = False   ###### Si nous voulons observer les cartes photospheriques
 Signature = False       ###### Si on souhaite visualiser les zones radiativement explorees
 Distribution = False    ###### Permet de visualiser la distribution de spectre des distributions a posteriori
@@ -240,6 +246,10 @@ print 'Resolution of the GCM simulation (latitude/longitude) : %i/%i'%(reso_lat,
 
 if Profil == True :
 
+    if Composition == True :
+        T_comp = np.load('%s%s/T_comp_%s.npy'%(path,name_source,name_exo))
+        P_comp = np.load('%s%s/P_comp_%s.npy'%(path,name_source,name_exo))
+        comp = np.load('%s%s/x_species_comp_%s.npy'%(path,name_source,name_exo))
     if TopPressure == True :
         T_Ref = np.amax(T_iso_array)
         alp = R_gp*T_Ref/(g0*M)*np.log(P_h/P_surf)
@@ -253,6 +263,8 @@ if Profil == True :
     d_lim = (Rp+h)*np.cos(np.pi/2.-beta_rad)
     alp_max = R_gp*T_max/(g0*M)*np.log(P_tau/P_surf)
     n_lim = -alp_max/(1+alp_max/Rp)
+
+    bar = ProgressBar(reso_lat+1,'Data generation')
 
     for i_lat in range(reso_lat+1) :
         for i_long in range(reso_long+1) :
@@ -289,16 +301,36 @@ if Profil == True :
 
                 if z < n_lim :
                     data_convert[1,0,i_n,i_lat,i_long] = T_max
-                    data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*M/(R_gp*T_max)*z/(1+z/Rp))
                 else :
                     if z_maxi == 0 :
                         z_maxi = z - delta_z
                         P_top = data_convert[0,0,i_n-1,i_lat,i_long]
                     data_convert[1,0,i_n,i_lat,i_long] = T
-                    data_convert[0,0,i_n,i_lat,i_long] = P_top*np.exp(-g0*(1/(1+z_maxi/Rp))**2*M/(R_gp*T)*(z-z_maxi)/(1+(z-z_maxi)/(Rp+z_maxi)))
 
-                data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = x_ratio_species
-                data_convert[number-1,0,i_n,i_lat,i_long] = M
+                if Composition == False :
+                    if z < n_lim :
+                        data_convert[0,0,i_n,i_lat,i_long] = P_surf*np.exp(-g0*M/(R_gp*T)*z/(1+z/Rp))
+                    else :
+                        data_convert[0,0,i_n,i_lat,i_long] = P_top*np.exp(-g0*(1/(1+z_maxi/Rp))**2*M/(R_gp*T)*(z-z_maxi)/(1+(z-z_maxi)/(Rp+z_maxi)))
+                    data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = x_ratio_species
+                    data_convert[number-1,0,i_n,i_lat,i_long] = M
+                else :
+                    res, c_grid, i_grid = interp2olation_uni_multi(data_convert[0,0,i_n,i_lat,i_long],data_convert[1,0,i_n,i_lat,i_long],P_comp,T_comp,comp)
+                    data_convert[2:2+n_species.size,0,i_n,i_lat,i_long] = res/np.nansum(res)
+                    data_convert[number-1,0,i_n,i_lat,i_long] = np.nansum(M_species*data_convert[2:2+n_species.size,0,i_n,i_lat,i_long])
+                    if i_n == 0 :
+                        data_convert[0,0,i_n,i_lat,i_long] = P_surf
+                    else :
+                        g = g0*1/(1+z/Rp)**2
+                        if i_n == 1 or i_n == n_layers+1 :
+                            delta = delta_z/2.
+                        else :
+                            delta = delta_z
+                        data_convert[0,0,i_n,i_lat,i_long] = data_convert[0,0,i_n-1,i_lat,i_long]*np.exp(-g*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*delta)
+        bar.animate(i_lat+1)
+
+    print data_convert[0,0,:,0,0]
+    print data_convert[1,0,:,0,0]
 
     if TopPressure == True :
         h = h_top
@@ -451,7 +483,7 @@ if Parameters == True :
         # Telechargement des donnees CIA
 
         if Cont == True :
-            k_cont = continuum
+            k_cont = continuum()
         else :
             k_cont = np.array([])
 
@@ -495,7 +527,7 @@ if Parameters == True :
 
 ########################################################################################################################
 
-        direc = "%s/%s/"%(name_file,opac_file)
+        direc = "%s/%s"%(name_file,opac_file)
 
         convertator (P,T,gen,c_species,Q,comp,ind_active,ind_cross,k_corr_data_grid,k_cont,\
                      Q_cloud,P_sample,T_sample,Q_sample,bande_sample,bande_cloud,x_step,r_eff,r_cloud,rho_p,direc,\
@@ -545,10 +577,10 @@ if Cylindric_transfert_3D == True :
 
     if Continuum == True :
         if Kcorr == True :
-            k_cont_rmd = np.load("%s%s/%s/k_cont_h2heFS_%i%i_%s_%i_%i%i_%i_rmd_%.2f_%.2f_%s.npy"\
+            k_cont_rmd = np.load("%s%s/%s/k_cont_%i%i_%s_%i_%i%i_%i_rmd_%.2f_%.2f_%s.npy"\
             %(path,name_file,opac_file,reso_long,reso_lat,name_exo,t,dim_bande,dim_gauss-1,x_step,phi_rot,phi_obli,domain))
         else :
-            k_cont_rmd = np.load("%s%s/%s/k_cont_h2heFS_%i%i_%s_%i_%i_%i_rmd_%.2f_%.2f_%s.npy"\
+            k_cont_rmd = np.load("%s%s/%s/k_cont_%i%i_%s_%i_%i_%i_rmd_%.2f_%.2f_%s.npy"\
             %(path,name_file,opac_file,reso_long,reso_lat,name_exo,t,dim_bande,x_step,phi_rot,phi_obli,domain))
     else :
         k_cont_rmd = np.array([])
