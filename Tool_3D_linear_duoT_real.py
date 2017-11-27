@@ -294,8 +294,14 @@ if Profil == True :
                 else :
                     T = T_max
             if i_lat == 0 or i_lat == reso_lat :
-                T = (T_max+T_min)/2.
-
+                if beta_rad >= theta_step :
+                    T = (T_max+T_min)/2.
+                else :
+                    if i_lat == 0 :
+                        T = T_max
+                    if i_lat == reso_lat :
+                        T = T_min
+                        
             for i_n in range(n_layers+2) :
                 if i_n == 0 :
                     z = 0
