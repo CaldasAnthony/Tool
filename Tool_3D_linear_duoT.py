@@ -46,6 +46,7 @@ g0 = G*Mp/(Rp**2)
 
 Rs = 1.155*R_S
 Ts = 6065.
+d_al = 154*9.461e+15
 
 #Rs = 0.206470165349*R_S
 #Ts = 3000.
@@ -186,7 +187,12 @@ Module = False          ###### Si nous souhaitons moduler la densite de referenc
 D3Maille = True        ###### Si nous voulons resoudre le transfert dans la maille 3D
 TimeSel = True         ###### Si nous etudions un temps precis de la simulation
 
-Script = True          ###### Si nous voulons avoir une version .dat du spectre
+########################################################################################################################
+
+Script = False          ###### Si nous voulons avoir une version .dat du spectre
+ErrOr = True           ###### Si calculons le bruit de photon pour un instrument donne
+detection = JWST()
+Noise = True           ###### Si nous voulons bruiter le signal a partir du bruit de photon calcule
 Pressure_plot = False   ###### Si nous voulons observer les cartes photospheriques
 Signature = False       ###### Si on souhaite visualiser les zones radiativement explorees
 Distribution = False    ###### Permet de visualiser la distribution de spectre des distributions a posteriori
@@ -713,137 +719,32 @@ print 'Pytmosph3R process finished with success'
 if Script == True :
 
     I = np.load('%s.npy'%(save_name_3D))
-    error = 5.e-5
-    output = "Tools/"
-    bande_sample = np.load("%s%s/bande_sample_%s.npy"%(path,name_source,source))
-    R_eff_bar,R_eff,ratio_bar,ratR_bar,bande_bar,flux_bar,flux = atmospectre(I,bande_sample,Rs,Rp,r_step,0,\
-                                                                                        False,Kcorr,Middle)
-    file_name = '%s.dat'%(save_name_3D)
+    output = 'Tools/'
+    if ErrOr == True :
+        class star :
+            def __init__(self):
+                self.radius = Rs
+                self.temperature = Ts
+                self.distance = d_al
+        bande_sample = np.load("%s%s/bande_sample_%s.npy"%(path,name_source,source))
+        bande_sample = np.delete(bande_sample,[0])
+        int_lambda = np.zeros((2,bande_sample.size))
+        bande_sample = np.sort(bande_sample)
 
-    output = open(file_name,'w')
-
-    for i_wr in range(bande_sample.size) :
-
-        if bande_sample[bande_sample.size - i_wr - 1] != 0 :
-            output.write('%.18E '%(1/(100.*bande_sample[bande_sample.size - i_wr - 1])*10**6))
-            output.write('%.18E '%(flux[bande_sample.size - i_wr - 1]))
-            output.write('%.18E \n'%(error))
-
-########################################################################################################################
-
-if Pressure_plot == True :
-
-    plt.figure(3)
-    tau = -np.log(I)
-    P_tau = np.zeros((theta_number,dim_bande))
-    for i_theta in range(theta_number) :
-        if i_theta <= theta_number/2. :
-            lat = np.int(reso_lat - np.abs(reso_lat/2. - i_theta))
-        else :
-            lat = np.int(np.abs(3/2.*reso_lat - i_theta))
-        if i_theta <= theta_number/2. :
-            long = np.int(3/4.*reso_long)
-        else :
-            if i_theta > 3/2.*theta_number :
-                long = np.int(3/4.*reso_long)
+        for i_bande in range(bande_sample.size) :
+            if i_bande == 0 :
+                int_lambda[0,i_bande] = bande_sample[0]
+                int_lambda[1,i_bande] = (bande_sample[i_bande+1]+bande_sample[i_bande])/2.
+            elif i_bande == bande_sample.size - 1 :
+                int_lambda[0,i_bande] = (bande_sample[i_bande-1]+bande_sample[i_bande])/2.
+                int_lambda[1,i_bande] = bande_sample[bande_sample.size-1]
             else :
-                long = np.int(1/4.*reso_long)
-        for i_bande in range(dim_bande) :
-            wh_ze, = np.where(tau[i_bande,:,i_theta]!=-np.inf)
-            wh, = np.where(tau[i_bande,wh_ze,i_theta] < 1.)
-            P_tau[i_theta,i_bande] = data_convert[0,0,wh[0],lat,long]/100.
-
-    wh_ze, = np.where(bande_sample != 0)
-    wl = np.log10(1./bande_sample[wh_ze]*10000.)
-    P_tau = np.log10(P_tau[:,wh_ze])
-    x = np.linspace(0,360-360/np.float(theta_number),theta_number)
-    y = np.linspace(np.amin(wl),np.amax(wl),100000)
-    def f(X,Y,P_tau,wl):
-        P = np.zeros((X.size,Y.size))
-        for i in range(Y.size) :
-            wh, = np.where(wl <= Y[i])
-            P[:,i] = P_tau[:,wh[0]]
-        return P
-
-    plt.imshow(f(x,y,P_tau,wl),origin='lower',aspect='auto',extent=[np.amin(wl), np.amax(wl),0,360],cmap='hot')
-    plt.yticks(np.linspace(0.,360,10,endpoint=True))
-    plt.ylabel('Theta (degrees)')
-    plt.xlabel('Wavelength (micron)')
-    plt.colorbar()
+                int_lambda[0,i_bande] = (bande_sample[i_bande-1]+bande_sample[i_bande])/2.
+                int_lambda[1,i_bande] = (bande_sample[i_bande+1]+bande_sample[i_bande])/2.
+        int_lambda = np.sort(10000./int_lambda[::-1])
+        noise = stellar_noise(star(),detection,int_lambda)
+    flux_script(output,path,name_source,source,save_name_3D,I,noise,Rs,Rp,r_step,Kcorr,Middle,Noise)
 
 ########################################################################################################################
-
-if Signature == True :
-
-    dim_bande = 100
-    I = np.load('%s.npy'%(save_name_3D))
-    data_convert = np.load("%s%s/%s/%s_data_convert_%i%i%i.npy"%(path,name_file,param_file,name_exo,reso_alt,reso_long,\
-                reso_lat))
-    bande_sample = np.load("%s%s/bande_sample_%s.npy"%(path,name_source,source))
-    bande_sample = bande_sample[:dim_bande]
-    I = I[:100]
-    theta = 0
-    crit = 0.0001
-
-    parameters_signature(I,theta,theta_number,crit,bande_sample,Rs,Rp,r_step,n_layers,data_convert,reso_long,reso_lat,reso_alt,\
-                phi_obli,phi_rot,path,name_file,stitch_file,Kcorr,Middle)
-
-########################################################################################################################
-
-if Distribution == True :
-
-    dim_bande = 100
-    live_number = 100
-    dimension = 3
-    output_file = 'Water_3D_duo_sphe_0.5_1'
-
-                                    ###############################################
-
-    cross = np.load("%s%s/crossection_%s.npy"%(path,name_source,source))
-    cross = cross[ind_cross]
-    cross = cross[:,:,:,:dim_bande]
-    gauss = np.array([])
-    gauss_val = np.array([])
-    P_sample = np.load("%s%s/P_sample_%s.npy"%(path,name_source,source))
-    T_sample = np.load("%s%s/T_sample_%s.npy"%(path,name_source,source))
-    if Tracer == True :
-        Q_sample = np.load("%s%s/Q_sample_%s.npy"%(path,name_source,source))
-    else :
-        Q_sample = np.array([])
-    bande_sample = np.load("%s%s/bande_sample_%s.npy"%(path,name_source,source))
-    bande_sample = bande_sample[:dim_bande]
-
-    if Continuum == True :
-        k_cont_h2h2 = np.load("%s%s/k_cont_h2h2.npy"%(path,name_source))
-        k_cont_h2he = np.load("%s%s/k_cont_h2he.npy"%(path,name_source))
-        k_cont_nu = np.load("%s%s/K_cont_nu_h2h2.npy"%(path,name_source))
-        T_cont = np.load("%s%s/T_cont_h2h2.npy"%(path,name_source))
-    else :
-        k_cont_h2h2 = np.array([])
-        k_cont_h2he = np.array([])
-        k_cont_nu = np.array([])
-        T_cont = np.array([])
-
-    if Cloudy == True :
-        bande_cloud = np.load("%s%s/bande_cloud_%s.npy"%(path,name_source,name_exo))
-        r_cloud = np.load("%s%s/radius_cloud_%s.npy"%(path,name_source,name_exo))
-        cl_name = ''
-        for i in range(c_species_name.size) :
-            cl_name += '%s_'%(c_species_name[i])
-        Q_cloud = "%s%s/Q_%s%s.npy"%(path,name_source,cl_name,name_exo)
-        message_clouds = ''
-        for i in range(c_species.size) :
-            message_clouds += '%s (%.2f microns/%.3f)  '%(c_species[i],r_eff*10**6,rho_p[i]/1000.)
-    else :
-        bande_cloud = np.array([])
-        r_cloud = np.array([])
-        Q_cloud = np.array([])
-
-                                    ###############################################
-
-    spectral_distribution(nest_out_path,output_file,dimension,live_number,Mp,Rs,P_surf,P_h,n_layers,n_species,number,\
-            m_species,c_species,cross,ind_active,k_cont_h2h2,k_cont_h2he,k_cont_nu,Q_cloud,T_cont,P_sample,T_sample,\
-            Q_sample,bande_sample,bande_cloud,r_eff,r_cloud,rho_p,name_file,domain,path,x_ratio_species_inactive,\
-            Tracer,Continuum,Scattering,Clouds,Kcorr,Optimal,Discret,Integral,Gravity,Molecular)
 
 plt.show()
