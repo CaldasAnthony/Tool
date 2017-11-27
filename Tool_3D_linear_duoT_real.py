@@ -141,7 +141,7 @@ LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
 Composition = True     ###### Se placer a l'equilibre thermodynamique
 
-Parameters = True
+Parameters = False
 
 Cylindre = True        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
@@ -186,7 +186,7 @@ TimeSel = True         ###### Si nous etudions un temps precis de la simulation
 
 ########################################################################################################################
 
-Script = False          ###### Si nous voulons avoir une version .dat du spectre
+Script = True          ###### Si nous voulons avoir une version .dat du spectre
 ErrOr = True           ###### Si calculons le bruit de photon pour un instrument donne
 detection = JWST()
 Noise = True           ###### Si nous voulons bruiter le signal a partir du bruit de photon calcule
