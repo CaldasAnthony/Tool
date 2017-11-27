@@ -279,7 +279,7 @@ if Profil == True :
             phi_long = i_long*2*np.pi/(reso_long)
             x = np.abs((Rp+h)*np.cos(phi_lat)*np.cos(phi_long))
 
-            if x <= d_lim and i_lat != 0  and i_lat != reso_lat :
+            if x <= d_lim and i_lat != 0  and i_lat != reso_lat and beta_rad >= theta_step :
                 if i_long >= 0. and i_long < reso_long/4. :
                     T = T_max - (d_lim - x)*(T_max-T_min)/(2*d_lim)
                 if i_long >= 3*reso_long/2. and i_long < reso_long :
@@ -297,10 +297,10 @@ if Profil == True :
                 if beta_rad >= theta_step :
                     T = (T_max+T_min)/2.
                 else :
-                    if i_lat == 0 :
-                        T = T_max
-                    if i_lat == reso_lat :
+                    if i_long >= reso_long/4. and i_long < 3.*reso_long/4. :
                         T = T_min
+                    else :
+                        T = T_max
 
             for i_n in range(n_layers+2) :
                 if i_n == 0 :
