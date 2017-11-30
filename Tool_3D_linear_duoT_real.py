@@ -746,7 +746,11 @@ print 'Pytmosph3R process finished with success'
 if Script == True :
 
     I = np.load('%s.npy'%(save_name_3D))
-    output = 'Tools/%s_real/'%(name_exo)
+    save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real/"%(name_exo)
+    if Composition == False :
+        save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+    else :
+        save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
     if ErrOr == True :
         class star :
             def __init__(self):
@@ -771,6 +775,6 @@ if Script == True :
         int_lambda = np.sort(10000./int_lambda[::-1])
         noise = stellar_noise(star(),detection,int_lambda)
         noise = noise[::-1]
-    flux_script(output,path,name_source,source,save_name_3D,I,noise,Rs,Rp,r_step,Kcorr,Middle,Noise)
+    flux_script(path,name_source,source,save_name_3D,I,noise,Rs,Rp,r_step,Kcorr,Middle,Noise)
 
 ########################################################################################################################
