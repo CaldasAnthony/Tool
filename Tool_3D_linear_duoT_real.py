@@ -215,9 +215,9 @@ save_adress = "/data1/caldas/Pytmosph3R/Tools/"
 special = ''
 stud = stud_type(r_eff,Single,Continuum,Isolated,Scattering,Clouds)
 if Composition == False :
-            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
-        else :
-            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+else :
+    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
 
 ########################################################################################################################
 ########################################################################################################################
