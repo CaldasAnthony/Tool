@@ -105,7 +105,7 @@ class continuum :
 
 # Proprietes de maille
 
-h, P_h, n_layers = 1.36e+7, 1.e-5, 150
+h, P_h, n_layers = 1.36e+7, 1.e-5, 200
 delta_z, r_step, x_step, theta_number = 3.0e+4, 3.0e+4, 3.0e+4, 96
 z_array = np.arange(h/np.float(delta_z)+1)*float(delta_z)
 theta_step = 2*np.pi/np.float(theta_number)
