@@ -211,7 +211,7 @@ Flux = True            ###### Spectre flux = f(longueur d'onde)
 
 # Sauvegardes
 
-save_adress = "/data1/caldas/Pytmosph3R/Tools/"
+save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real_npy/"%(name_exo)
 special = ''
 stud = stud_type(r_eff,Single,Continuum,Isolated,Scattering,Clouds)
 if Composition == False :
@@ -355,7 +355,7 @@ if Profil == True :
         z_array = np.arange(h/np.float(delta_z)+1)*float(delta_z)
         if LimTop == False :
             lim_alt = h
-        save_adress = "/data1/caldas/Pytmosph3R/Tools/"
+        save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real_npy/"%(name_exo)
         if Composition == False :
             save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
         else :
@@ -746,7 +746,7 @@ print 'Pytmosph3R process finished with success'
 if Script == True :
 
     I = np.load('%s.npy'%(save_name_3D))
-    output = 'Tools/'
+    output = 'Tools/%s_real/'%(name_exo)
     if ErrOr == True :
         class star :
             def __init__(self):
