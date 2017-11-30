@@ -770,6 +770,6 @@ if Script == True :
                 int_lambda[1,i_bande] = (bande_sample[i_bande+1]+bande_sample[i_bande])/2.
         int_lambda = np.sort(10000./int_lambda[::-1])
         noise = stellar_noise(star(),detection,int_lambda)
-    flux_script(output,path,name_source,source,save_name_3D,I,noise,Rs,Rp,r_step,Kcorr,Middle,Noise)
+    flux_script(output,path,name_source,source,save_name_3D,I,noise[::-1],Rs,Rp,r_step,Kcorr,Middle,Noise)
 
 ########################################################################################################################
