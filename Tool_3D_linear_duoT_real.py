@@ -745,7 +745,7 @@ print 'Pytmosph3R process finished with success'
 
 if Script == True :
 
-    I = np.load('%s.npy'%(save_name_3D))
+    I = np.load('%s'%(save_name_3D))
     output = 'Tools/'
     if ErrOr == True :
         class star :
