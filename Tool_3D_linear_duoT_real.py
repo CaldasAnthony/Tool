@@ -146,19 +146,19 @@ Composition = False     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
-Cylindre = True        ###### Construit la maille cylindrique
+Cylindre = False        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
 Layers = True
 
-Corr = True            ###### Traite les parcours optiques
+Corr = False            ###### Traite les parcours optiques
 Gravity = False         ###### Pour travailler a gravite constante
 Discret = True         ###### Calcul les distances discretes
 Integral = False        ###### Effectue l'integration sur les chemins optiques
 Ord = False             ###### Si Discreet == False, Ord permet de calculer les indices avec l'integration
 
-Matrix = True          ###### Transposition de la maille spherique dans la maille cylindrique
+Matrix = False          ###### Transposition de la maille spherique dans la maille cylindrique
 
-Convert = True         ###### Lance la fonction convertator qui assure l'interpolation des sections efficaces
+Convert = False         ###### Lance la fonction convertator qui assure l'interpolation des sections efficaces
 Kcorr = False           ###### Sections efficaces ou k-correles
 Molecular = True       ###### Effectue les calculs pour l'absorption moleculaire
 Cont = True            ###### Effectue les calculs pour l'absorption par les collisions
@@ -171,7 +171,7 @@ TimeSelec = True       ###### Si nous etudions un temps precis de la simulation
 
 # Cylindric transfert
 
-Cylindric_transfert_3D = True
+Cylindric_transfert_3D = False
 
 Isolated = False        ###### Ne tiens pas compte de l'absorption moleculaire
 Continuum = True       ###### Tiens compte de l'absorption par les collisions
@@ -708,7 +708,7 @@ if Cylindric_transfert_3D == True :
 if View == True :
 
     if Cylindric_transfert_3D == False :
-        Itot = np.load('%s.npy'%(save_name_3D))
+        Itot = np.load('%s'%(save_name_3D))
     if Kcorr == True :
         bande_sample = np.load("%s%s/bande_sample_%s.npy"%(path,name_source,domain))
     else :
