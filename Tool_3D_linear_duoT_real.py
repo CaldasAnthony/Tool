@@ -215,9 +215,9 @@ save_adress = "/data1/caldas/Pytmosph3R/Tools/"
 special = ''
 stud = stud_type(r_eff,Single,Continuum,Isolated,Scattering,Clouds)
 if Composition == False :
-    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
 else :
-    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
 
 ########################################################################################################################
 ########################################################################################################################
@@ -357,9 +357,9 @@ if Profil == True :
             lim_alt = h
         save_adress = "/data1/caldas/Pytmosph3R/Tools/"
         if Composition == False :
-            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
         else :
-            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
 
     np.save("%s%s/%s/%s_data_convert_%i%i%i.npy"%(path,name_file,param_file,name_exo,reso_alt,reso_long,reso_lat),\
                 data_convert)
@@ -708,7 +708,7 @@ if Cylindric_transfert_3D == True :
 if View == True :
 
     if Cylindric_transfert_3D == False :
-        Itot = np.load('%s'%(save_name_3D))
+        Itot = np.load('%s.npy'%(save_name_3D))
     if Kcorr == True :
         bande_sample = np.load("%s%s/bande_sample_%s.npy"%(path,name_source,domain))
     else :
@@ -745,7 +745,7 @@ print 'Pytmosph3R process finished with success'
 
 if Script == True :
 
-    I = np.load('%s'%(save_name_3D))
+    I = np.load('%s.npy'%(save_name_3D))
     output = 'Tools/'
     if ErrOr == True :
         class star :
