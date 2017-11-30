@@ -7,6 +7,7 @@ from Tool_pressure_generator import *
 sys.path.append('/data1/caldas/Pytmosph3R/PyRouts/')
 
 from pytransfert import *
+print JWST
 
 ########################################################################################################################
 ########################################################################################################################
@@ -56,14 +57,16 @@ alpha_step, delta_step = 2*np.pi/np.float(reso_long), np.pi/np.float(reso_lat)
 
 # Proprietes de l'atmosphere
 
-n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
-n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
+#n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
+#n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
+n_species = np.array(['H2','He','H2O'])
+n_species_active = np.array(['H2O'])
 
 # Proprietes de l'atmosphere isotherme
 
 T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
-x_ratio_species_active = np.array([0.002,0.002,0.002,0.002,0.002,0.002])
-x_ratio_species_inactive = np.array([0.002])
+x_ratio_species_active = np.array([0.05])
+x_ratio_species_inactive = np.array([])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)
 
 # Proprietes des nuages
@@ -111,7 +114,7 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 40.
+lim_alt, rupt_alt, beta = h, 0.e+0, 0.
 beta_rad = beta*2*np.pi/(360.)
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
@@ -139,9 +142,9 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
-Composition = True     ###### Se placer a l'equilibre thermodynamique
+Composition = False     ###### Se placer a l'equilibre thermodynamique
 
-Parameters = False
+Parameters = True
 
 Cylindre = True        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
@@ -189,7 +192,7 @@ TimeSel = True         ###### Si nous etudions un temps precis de la simulation
 Script = True          ###### Si nous voulons avoir une version .dat du spectre
 ErrOr = True           ###### Si calculons le bruit de photon pour un instrument donne
 detection = JWST()
-Noise = True           ###### Si nous voulons bruiter le signal a partir du bruit de photon calcule
+Noise = False           ###### Si nous voulons bruiter le signal a partir du bruit de photon calcule
 Pressure_plot = False   ###### Si nous voulons observer les cartes photospheriques
 Signature = False       ###### Si on souhaite visualiser les zones radiativement explorees
 Distribution = False    ###### Permet de visualiser la distribution de spectre des distributions a posteriori
@@ -211,8 +214,10 @@ Flux = True            ###### Spectre flux = f(longueur d'onde)
 save_adress = "/data1/caldas/Pytmosph3R/Tools/"
 special = ''
 stud = stud_type(r_eff,Single,Continuum,Isolated,Scattering,Clouds)
-save_name_3D = saving('3D',type,special,save_adress,version,name_exo,reso_long,reso_lat,t,h,dim_bande,dim_gauss,r_step,\
-            phi_rot,r_eff,domain,stud,lim_alt,rupt_alt,long,lat,Discreet,Integration,Module,Optimal,Kcorr,False)
+if Composition == False :
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+        else :
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
 
 ########################################################################################################################
 ########################################################################################################################
@@ -351,8 +356,10 @@ if Profil == True :
         if LimTop == False :
             lim_alt = h
         save_adress = "/data1/caldas/Pytmosph3R/Tools/"
-        save_name_3D = saving('3D',type,special,save_adress,version,name_exo,reso_long,reso_lat,t,h,dim_bande,dim_gauss,r_step,\
-            phi_rot,r_eff,domain,stud,lim_alt,rupt_alt,long,lat,Discreet,Integration,Module,Optimal,Kcorr,False)
+        if Composition == False :
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
+        else :
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_eq.npy"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta)
 
     np.save("%s%s/%s/%s_data_convert_%i%i%i.npy"%(path,name_file,param_file,name_exo,reso_alt,reso_long,reso_lat),\
                 data_convert)
