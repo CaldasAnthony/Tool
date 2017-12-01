@@ -57,16 +57,16 @@ alpha_step, delta_step = 2*np.pi/np.float(reso_long), np.pi/np.float(reso_lat)
 
 # Proprietes de l'atmosphere
 
-#n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
-#n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
-n_species = np.array(['H2','He','H2O'])
-n_species_active = np.array(['H2O'])
+n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
+n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
+#n_species = np.array(['H2','He','H2O'])
+#n_species_active = np.array(['H2O'])
 
 # Proprietes de l'atmosphere isotherme
 
 T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
-x_ratio_species_active = np.array([0.05])
-x_ratio_species_inactive = np.array([])
+x_ratio_species_active = np.array([0.01,0.01,0.01,0.01,0.01])
+x_ratio_species_inactive = np.array([0.01])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)
 
 # Proprietes des nuages
@@ -114,7 +114,7 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 5.
+lim_alt, rupt_alt, beta = h, 0.e+0, 30.
 beta_rad = beta*2*np.pi/(360.)
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
@@ -142,7 +142,7 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
-Composition = False     ###### Se placer a l'equilibre thermodynamique
+Composition = True     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
