@@ -16,7 +16,8 @@ print JWST
 
 path = "/data1/caldas/Pytmosph3R/"
 name_file = "Tools/Files"
-name_exo = "HD209458"
+#name_exo = "HD209458"
+name_exo = "GJ1214b"
 name_source = "Source"
 opac_file, param_file, stitch_file = 'Opacity', 'Parameters', 'Stitch'
 version = 6.2
@@ -35,21 +36,22 @@ if inclinaison != 0. :
 
 # Proprietes de l'exoplanete
 
-Rp = 15.*R_T
-Mp = 220.*M_T
+#Rp = 15.*R_T
+#Mp = 220.*M_T
 
-#Rp = 0.246384689105*R_J
-#Mp = 0.0206006322445*M_J
+Rp = 0.246384689105*R_J
+Mp = 0.0206006322445*M_J
 g0 = G*Mp/(Rp**2)
 
 # Proprietes de l'etoile hote
 
-Rs = 1.155*R_S
-Ts = 6065.
-d_al = 154*9.461e+15
+#Rs = 1.155*R_S
+#Ts = 6065.
+#d_al = 154*9.461e+15
 
-#Rs = 0.206470165349*R_S
-#Ts = 3000.
+Rs = 0.206470165349*R_S
+Ts = 3000.
+d_al = 42.4*9.461e+15
 
 # Proprietes en cas de lecture d'un diagfi
 
@@ -57,16 +59,19 @@ alpha_step, delta_step = 2*np.pi/np.float(reso_long), np.pi/np.float(reso_lat)
 
 # Proprietes de l'atmosphere
 
-n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
-n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
-#n_species = np.array(['H2','He','H2O'])
-#n_species_active = np.array(['H2O'])
+#n_species = np.array(['H2','He','H2O','CH4','N2','NH3','CO','CO2'])
+#n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
+n_species = np.array(['H2','He','H2O'])
+n_species_active = np.array(['H2O'])
 
 # Proprietes de l'atmosphere isotherme
 
-T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
-x_ratio_species_active = np.array([0.01,0.01,0.01,0.01,0.01,0.01])
-x_ratio_species_inactive = np.array([0.01])
+#T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
+#x_ratio_species_active = np.array([0.01,0.01,0.01,0.01,0.01,0.01])
+#x_ratio_species_inactive = np.array([0.01])
+T_iso_array, P_surf, P_tau = np.array([500.,1000.]), 1.e+6, 1.e+3
+x_ratio_species_active = np.array([0.05])
+x_ratio_species_inactive = np.array([])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)
 
 # Proprietes des nuages
@@ -114,7 +119,7 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 30.
+lim_alt, rupt_alt, beta = h, 0.e+0, 0.
 beta_rad = beta*2*np.pi/(360.)
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
@@ -142,7 +147,7 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
-Composition = True     ###### Se placer a l'equilibre thermodynamique
+Composition = False     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
