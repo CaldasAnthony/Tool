@@ -16,8 +16,8 @@ print JWST
 
 path = "/data1/caldas/Pytmosph3R/"
 name_file = "Tools/Files"
-#name_exo = "HD209458"
-name_exo = "GJ1214b"
+name_exo = "HD209458"
+#name_exo = "GJ1214b"
 name_source = "Source"
 opac_file, param_file, stitch_file = 'Opacity', 'Parameters', 'Stitch'
 version = 6.2
@@ -36,22 +36,22 @@ if inclinaison != 0. :
 
 # Proprietes de l'exoplanete
 
-#Rp = 15.*R_T
-#Mp = 220.*M_T
+Rp = 15.*R_T
+Mp = 220.*M_T
 
-Rp = 0.246384689105*R_J
-Mp = 0.0206006322445*M_J
+#Rp = 0.246384689105*R_J
+#Mp = 0.0206006322445*M_J
 g0 = G*Mp/(Rp**2)
 
 # Proprietes de l'etoile hote
 
-#Rs = 1.155*R_S
-#Ts = 6065.
-#d_al = 154*9.461e+15
+Rs = 1.155*R_S
+Ts = 6065.
+d_al = 154*9.461e+15
 
-Rs = 0.206470165349*R_S
-Ts = 3000.
-d_al = 42.4*9.461e+15
+#Rs = 0.206470165349*R_S
+#Ts = 3000.
+#d_al = 42.4*9.461e+15
 
 # Proprietes en cas de lecture d'un diagfi
 
@@ -66,10 +66,10 @@ n_species_active = np.array(['H2O'])
 
 # Proprietes de l'atmosphere isotherme
 
-#T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
+T_iso_array, P_surf, P_tau = np.array([1000.,2000.]), 1.e+6, 1.e+3
 #x_ratio_species_active = np.array([0.01,0.01,0.01,0.01,0.01,0.01])
 #x_ratio_species_inactive = np.array([0.01])
-T_iso_array, P_surf, P_tau = np.array([500.,1000.]), 1.e+6, 1.e+3
+#T_iso_array, P_surf, P_tau = np.array([500.,1000.]), 1.e+6, 1.e+3
 x_ratio_species_active = np.array([0.05])
 x_ratio_species_inactive = np.array([])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)
@@ -119,7 +119,7 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 0.
+lim_alt, rupt_alt, beta = h, 0.e+0, 15.
 beta_rad = beta*2*np.pi/(360.)
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
@@ -147,7 +147,7 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
-Composition = False     ###### Se placer a l'equilibre thermodynamique
+Composition = True     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
@@ -197,7 +197,7 @@ TimeSel = True         ###### Si nous etudions un temps precis de la simulation
 Script = True          ###### Si nous voulons avoir une version .dat du spectre
 ErrOr = True           ###### Si calculons le bruit de photon pour un instrument donne
 detection = JWST()
-Noise = False           ###### Si nous voulons bruiter le signal a partir du bruit de photon calcule
+Noise = True           ###### Si nous voulons bruiter le signal a partir du bruit de photon calcule
 Pressure_plot = False   ###### Si nous voulons observer les cartes photospheriques
 Signature = False       ###### Si on souhaite visualiser les zones radiativement explorees
 Distribution = False    ###### Permet de visualiser la distribution de spectre des distributions a posteriori
@@ -223,6 +223,8 @@ if Composition == False :
     save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
 else :
     save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+if Noise == True :
+    save_name_3D = '%s_n'%(save_name_3D)
 
 ########################################################################################################################
 ########################################################################################################################
@@ -365,6 +367,8 @@ if Profil == True :
             save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
         else :
             save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+        if Noise == True :
+            save_name_3D = '%s_n'%(save_name_3D)
 
     np.save("%s%s/%s/%s_data_convert_%i%i%i.npy"%(path,name_file,param_file,name_exo,reso_alt,reso_long,reso_lat),\
                 data_convert)
@@ -756,6 +760,8 @@ if Script == True :
         save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
     else :
         save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+    if Noise == True :
+        save_name_3D = '%s_n'%(save_name_3D)
     if ErrOr == True :
         class star :
             def __init__(self):
