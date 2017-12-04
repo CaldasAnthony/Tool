@@ -147,7 +147,7 @@ Profil = True          ###### Reproduit la maille spherique en altitude
 Surf = True            ###### Si des donnees de surface sont accessibles
 LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
-Composition = True     ###### Se placer a l'equilibre thermodynamique
+Composition = False     ###### Se placer a l'equilibre thermodynamique
 
 Parameters = True
 
