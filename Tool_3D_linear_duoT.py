@@ -62,7 +62,7 @@ n_species_active = np.array(['H2O','CH4','NH3','CO','CO2'])
 
 # Proprietes de l'atmosphere isotherme
 
-T_iso_array, P_surf = np.array([1500.,2000.]), 1.e+6
+T_iso_array, P_surf = np.array([1000.,2000.]), 1.e+6
 x_ratio_species_active = np.array([0.002,0.002,0.002,0.002,0.002,0.002])
 x_ratio_species_inactive = np.array([0.002])
 M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active,IsoComp=True)

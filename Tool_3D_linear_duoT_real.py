@@ -165,7 +165,7 @@ Matrix = True          ###### Transposition de la maille spherique dans la maill
 
 Convert = True         ###### Lance la fonction convertator qui assure l'interpolation des sections efficaces
 Kcorr = False           ###### Sections efficaces ou k-correles
-Molecular = True       ###### Effectue les calculs pour l'absorption moleculaire
+Molecul = True       ###### Effectue les calculs pour l'absorption moleculaire
 Cont = True            ###### Effectue les calculs pour l'absorption par les collisions
 Scatt = True           ###### Effectue les calculs pour l'absorption par diffusion Rayleigh
 Cl = False              ###### Effectue les calculs pour l'absorption par les nuages
@@ -178,7 +178,7 @@ TimeSelec = True       ###### Si nous etudions un temps precis de la simulation
 
 Cylindric_transfert_3D = True
 
-Isolated = False        ###### Ne tiens pas compte de l'absorption moleculaire
+Molecular = True           ###### Tiens compte de l'absorption moleculaire
 Continuum = True       ###### Tiens compte de l'absorption par les collisions
 Scattering = True      ###### Tiens compte de l'absorption par la diffusion
 Clouds = False          ###### Tiens compte de l'absoprtion par les nuages
@@ -218,7 +218,7 @@ Flux = True            ###### Spectre flux = f(longueur d'onde)
 
 save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real_npy/"%(name_exo)
 special = ''
-stud = stud_type(r_eff,Single,Continuum,Isolated,Scattering,Clouds)
+stud = stud_type(r_eff,Single,Continuum,Molecular,Scattering,Clouds)
 if Composition == False :
     save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
 else :
@@ -288,31 +288,31 @@ if Profil == True :
         for i_long in range(reso_long+1) :
             z_maxi = 0
             phi_lat = -np.pi/2.+i_lat*np.pi/(np.float(reso_lat))
-            phi_long = i_long*2*np.pi/(reso_long)
+            phi_long = -np.pi + i_long*2*np.pi/(reso_long)
             x = np.abs((Rp+h)*np.cos(phi_lat)*np.cos(phi_long))
 
             if x <= d_lim and i_lat != 0  and i_lat != reso_lat and beta_rad >= theta_step :
                 if i_long >= 0. and i_long < reso_long/4. :
-                    T = T_max - (d_lim - x)*(T_max-T_min)/(2*d_lim)
+                    T = T_min + (d_lim - x)*(T_max-T_min)/(2*d_lim)
                 if i_long >= 3*reso_long/2. and i_long < reso_long :
-                    T = T_max - (d_lim - x)*(T_max-T_min)/(2*d_lim)
+                    T = T_min + (d_lim - x)*(T_max-T_min)/(2*d_lim)
                 if i_long >= reso_long/4. and i_long < reso_long/2. :
-                    T = T_min + (d_lim - x)*(T_max-T_min)/(2*d_lim)
+                    T = T_max - (d_lim - x)*(T_max-T_min)/(2*d_lim)
                 if i_long >= reso_long/2. and i_long < 3*reso_long/2. :
-                    T = T_min + (d_lim - x)*(T_max-T_min)/(2*d_lim)
+                    T = T_max - (d_lim - x)*(T_max-T_min)/(2*d_lim)
             else :
                 if i_long >= reso_long/4. and i_long < 3.*reso_long/4. :
-                    T = T_min
-                else :
                     T = T_max
+                else :
+                    T = T_min
             if i_lat == 0 or i_lat == reso_lat :
                 if beta_rad >= theta_step :
                     T = (T_max+T_min)/2.
                 else :
                     if i_long >= reso_long/4. and i_long < 3.*reso_long/4. :
-                        T = T_min
-                    else :
                         T = T_max
+                    else :
+                        T = T_min
 
             for i_n in range(n_layers+2) :
                 if i_n == 0 :
@@ -560,7 +560,7 @@ if Parameters == True :
         convertator (P,T,gen,c_species,Q,comp,ind_active,ind_cross,k_corr_data_grid,k_cont,\
                      Q_cloud,P_sample,T_sample,Q_sample,bande_sample,bande_cloud,x_step,r_eff,r_cloud,rho_p,direc,\
                      t,phi_rot,phi_obli,n_species,domain,ratio_HeH2,path,name_exo,reso_long,reso_lat,\
-                     Tracer,Molecular,Cont,Cl,Scatt,Kcorr,Optimal)
+                     Tracer,Molecul,Cont,Cl,Scatt,Kcorr,Optimal)
 
 
 ########################################################################################################################
@@ -579,7 +579,7 @@ if Cylindric_transfert_3D == True :
 
     print 'Download of opacities data'
 
-    if Isolated == False :
+    if Molecular == True :
         if Kcorr == True :
             k_rmd = np.load("%s%s/%s/k_corr_%i%i_%s_%i_%i%i_%i_rmd_%.2f_%.2f_%s.npy"\
             %(path,name_file,opac_file,reso_long,reso_lat,name_exo,t,dim_bande,dim_gauss-1,x_step,phi_rot,phi_obli,domain))
@@ -708,7 +708,7 @@ if Cylindric_transfert_3D == True :
     Itot = trans2fert3D (k_rmd,k_cont_rmd,k_sca_rmd,k_cloud_rmd,Rp,h,g0,r_step,theta_step,gauss_val,dim_bande,data_convert,\
                   P_rmd,T_rmd,Q_rmd,dx_grid,order_grid,pdx_grid,z_grid,t,\
                   name_file,n_species,Single,rmind,lim_alt,rupt_alt,\
-                  Tracer,Continuum,Isolated,Scattering,Clouds,Kcorr,Rupt,Module,Integration,TimeSel)
+                  Tracer,Continuum,Molecular,Scattering,Clouds,Kcorr,Rupt,Module,Integration,TimeSel)
 
     np.save(save_name_3D,Itot)
 
