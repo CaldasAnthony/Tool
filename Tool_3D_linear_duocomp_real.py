@@ -72,7 +72,7 @@ T_iso, P_surf, P_tau = 1500., 1.e+6, 1.e+3
 #T_iso_array, P_surf, P_tau = np.array([500.,1000.]), 1.e+6, 1.e+3
 x_ratio_species_active = np.array([0.01,0.05])
 x_ratio_species_inactive = np.array([])
-M_species, M, x_ratio_species = ratio(n_species,x_ratio_species_active[0],IsoComp=True)
+M_species, M, x_ratio_species = ratio(n_species,np.array([0.01]),IsoComp=True)
 
 # Proprietes des nuages
 
