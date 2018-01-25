@@ -386,6 +386,11 @@ if Parameters == True :
 
     if Cylindre == True :
 
+        long_lat = np.zeros((2,int(np.amax(np.array([reso_long,reso_lat])))+1))
+        degpi = np.pi/180.
+        long_lat[0,0:reso_long+1] = np.linspace(-180.*degpi,180.*degpi,reso_long+1,dtype=np.float64)
+        long_lat[1,0:reso_lat+1] = np.linspace(-90*degpi,90.*degpi,reso_lat+1,dtype=np.float64)
+
         p_grid,q_grid,z_grid = cylindric_assymatrix_parameter(Rp,h,alpha_step,delta_step,r_step,theta_step,theta_number,\
                                 x_step,z_array,phi_rot,phi_obli,reso_long,reso_lat,Obliquity,Middle,Layers)
 
