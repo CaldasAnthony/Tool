@@ -353,9 +353,6 @@ if Profil == True :
                         data_convert[0,0,i_n,i_lat,i_long] = data_convert[0,0,i_n-1,i_lat,i_long]*np.exp(-g*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*delta)
         bar.animate(i_lat+1)
 
-    print data_convert[0,0,:,0,0]
-    print data_convert[1,0,:,0,0]
-
     if TopPressure == True :
         h = h_top
         reso_alt = int(h/1000)
@@ -383,8 +380,13 @@ if Parameters == True :
 
     if Cylindre == True :
 
+        long_lat = np.zeros((2,int(np.amax(np.array([reso_long,reso_lat])))+1))
+        degpi = np.pi/180.
+        long_lat[0,0:reso_long+1] = np.linspace(-180.*degpi,180.*degpi,reso_long+1,dtype=np.float64)
+        long_lat[1,0:reso_lat+1] = np.linspace(-90*degpi,90.*degpi,reso_lat+1,dtype=np.float64)
+
         p_grid,q_grid,z_grid = cylindric_assymatrix_parameter(Rp,h,alpha_step,delta_step,r_step,theta_step,theta_number,\
-                                x_step,z_array,phi_rot,phi_obli,reso_long,reso_lat,Obliquity,Middle,Layers)
+                                x_step,z_array,phi_rot,phi_obli,reso_long,reso_lat,long_lat,Obliquity,Middle,Layers)
 
         np.save("%s%s/%s/p_%i_%i%i%i_%i_%.2f_%.2f.npy"%(path,name_file,stitch_file,theta_number,reso_long,reso_lat,\
                 reso_alt,r_step,phi_rot,phi_obli),p_grid)
