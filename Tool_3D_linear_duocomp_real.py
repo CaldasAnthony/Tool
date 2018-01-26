@@ -149,19 +149,19 @@ LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
 Composition = False     ###### Se placer a l'equilibre thermodynamique
 
-Parameters = False
+Parameters = True
 
-Cylindre = True        ###### Construit la maille cylindrique
+Cylindre = False        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
 Layers = True
 
-Corr = True            ###### Traite les parcours optiques
+Corr = False            ###### Traite les parcours optiques
 Gravity = False         ###### Pour travailler a gravite constante
 Discret = True         ###### Calcul les distances discretes
 Integral = False        ###### Effectue l'integration sur les chemins optiques
 Ord = False             ###### Si Discreet == False, Ord permet de calculer les indices avec l'integration
 
-Matrix = True          ###### Transposition de la maille spherique dans la maille cylindrique
+Matrix = False          ###### Transposition de la maille spherique dans la maille cylindrique
 
 Convert = True         ###### Lance la fonction convertator qui assure l'interpolation des sections efficaces
 Kcorr = False           ###### Sections efficaces ou k-correles
