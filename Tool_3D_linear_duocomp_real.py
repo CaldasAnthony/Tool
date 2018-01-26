@@ -220,9 +220,9 @@ save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real_npy/"%(name_exo)
 special = ''
 stud = stud_type(r_eff,Single,Continuum,Molecular,Scattering,Clouds)
 if Composition == False :
-    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(x_ratio_species_active),np.amax(x_ratio_species_active),beta,P_tau/(1.e+5))
 else :
-    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+    save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(x_ratio_species_active),np.amax(x_ratio_species_active),beta,P_tau/(1.e+5))
 if Noise == True :
     save_name_3D = '%s_n'%(save_name_3D)
 
@@ -356,7 +356,7 @@ if Profil == True :
                             delta = delta_z/2.
                         else :
                             delta = delta_z
-                        data_convert[0,0,i_n,i_lat,i_long] = data_convert[0,0,i_n-1,i_lat,i_long]*np.exp(-g*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T)*delta)
+                        data_convert[0,0,i_n,i_lat,i_long] = data_convert[0,0,i_n-1,i_lat,i_long]*np.exp(-g*data_convert[number-1,0,i_n,i_lat,i_long]/(R_gp*T_iso)*delta)
         bar.animate(i_lat+1)
 
     if TopPressure == True :
@@ -367,9 +367,9 @@ if Profil == True :
             lim_alt = h
         save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real_npy/"%(name_exo)
         if Composition == False :
-            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(x_ratio_species_active),np.amax(x_ratio_species_active),beta,P_tau/(1.e+5))
         else :
-            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+            save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(x_ratio_species_active),np.amax(x_ratio_species_active),beta,P_tau/(1.e+5))
         if Noise == True :
             save_name_3D = '%s_n'%(save_name_3D)
 
@@ -765,9 +765,9 @@ if Script == True :
     I = np.load('%s.npy'%(save_name_3D))
     save_adress = "/data1/caldas/Pytmosph3R/Tools/%s_real/"%(name_exo)
     if Composition == False :
-        save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+        save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f"%(save_adress,name_exo,np.amin(x_ratio_species_active),np.amax(x_ratio_species_active),beta,P_tau/(1.e+5))
     else :
-        save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(T_iso_array),np.amax(T_iso_array),beta,P_tau/(1.e+5))
+        save_name_3D = "%s%s_3D_duo_linear_real_%i_%i_%i_%.2f_eq"%(save_adress,name_exo,np.amin(x_ratio_species_active),np.amax(x_ratio_species_active),beta,P_tau/(1.e+5))
     if Noise == True :
         save_name_3D = '%s_n'%(save_name_3D)
     if ErrOr == True :
