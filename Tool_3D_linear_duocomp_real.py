@@ -149,7 +149,7 @@ LogInterp = False       ###### Interpolation de la pression via le logarithme
 TopPressure = True     ###### Si nous voulons fixer le toit de l'atmosphere par rapport a une pression minimale
 Composition = False     ###### Se placer a l'equilibre thermodynamique
 
-Parameters = True
+Parameters = False
 
 Cylindre = True        ###### Construit la maille cylindrique
 Obliquity = False       ###### Si l'exoplanete est inclinee
