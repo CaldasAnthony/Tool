@@ -119,7 +119,7 @@ number = 3 + n_species.size + m_species.size + c_species.size
 
 # Choix dans la section de la maille
 
-lim_alt, rupt_alt, beta = h, 0.e+0, 0.*theta_step
+lim_alt, rupt_alt, beta = h, 0.e+0, 1.*theta_step*180./np.pi
 beta_rad = beta*2*np.pi/(360.)
 lat, long = 24, 47
 z_lim = int(lim_alt/delta_z)
